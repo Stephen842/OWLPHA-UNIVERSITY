@@ -45,17 +45,29 @@ All user content and data remain immutable and under the user's control. Through
 ---
 
 ## Repository Structure
+
 owlpha_university/
+
 ├── accounts/         # User authentication & profile
+
 ├── blog/             # Blog posts and community content
+
 ├── courses/          # Interactive learning modules
+
 ├── channels/         # Topic-based discussions
+
 ├── chat/             # Messaging app
+
 ├── conference/       # Video/voice conferencing
+
 ├── templates/        # Base HTML templates
+
 ├── static/           # Static files (CSS, JS)
+
 ├── media/            # Media uploads (IPFS-supported)
+
 ├── manage.py
+
 └── requirements.txt
 
 ## Contribution
