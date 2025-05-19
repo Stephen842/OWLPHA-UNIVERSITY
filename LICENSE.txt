@@ -1,0 +1,19 @@
+Copyright © 2025 OWLPHADAO
+
+All rights reserved.
+
+This software and its associated files are the intellectual property of OWLPHADAO and its contributors. Unauthorized copying, reproduction, redistribution, or modification of any part of this software, via any medium, is strictly prohibited.
+
+This project is **not open source**.
+
+Usage is permitted strictly for:
+- Internal development
+- Testing
+- Feedback gathering
+- Collaboration among authorized team members
+
+No part of this software may be used in commercial applications, redistributed, or modified for public use without express written consent from OWLPHADAO.
+
+To request usage or collaboration permissions, contact: **info@OWLPHADAO.com**
+
+By accessing this codebase, you agree to these terms.
