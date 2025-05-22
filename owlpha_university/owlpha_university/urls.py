@@ -23,11 +23,11 @@ from django.conf.urls import handler404, handler403, handler500
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
-    path('', include('blog.urls')),
-    path('', include('channels.urls')),
-    path('', include('chat.urls')),
-    path('', include('conference.urls')),
-    path('', include('courses.urls')),
+    #path('', include('blog.urls')),
+    #path('', include('channels.urls')),
+    #path('', include('chat.urls')),
+    #path('', include('conference.urls')),
+    #path('', include('courses.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
 

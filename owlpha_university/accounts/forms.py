@@ -2,8 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from django.forms.widgets import TextInput
-from .models import Users
+from .models import User
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -17,26 +16,27 @@ class UserForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
         min_length=8
     )
-
-    country = CountryField(blank_label='Select Country').formfield(
-        widget=CountrySelectWidget(),
-        required=True
-    )
-
     class Meta:
-        model = Users
-        fields = ['name', 'username', 'email', 'country', 'password1', 'password2']
+        model = User
+        fields = ['name', 'username', 'email', 'country']
+        widgets = {
+            'country': CountrySelectWidget()
+        }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['country'].required = True
+        self.fields['country'].widget.attrs.update({'data-placeholder': 'Select Country'})
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
-        if len(name) < 8:
-            raise forms.ValidationError('Name must be 8 characters long or more')
+        if len(name) < 6:
+            raise forms.ValidationError('Name must be 6 characters long or more')
         return name
     
     def clean_username(self):
         username = self.cleaned_data.get('username').lower()  # Convert to lowercase
-        if Users.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exists():
             raise forms.ValidationError('Username already taken.')
         return username
 
@@ -44,7 +44,7 @@ class UserForm(forms.ModelForm):
         email = self.cleaned_data.get('email').lower() # Convert to lowercase
         if len(email) < 8:
             raise forms.ValidationError('Email address must be 8 characters long')
-        if Users.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             raise forms.ValidationError('Email Address Already Registered...')
         return email
    
@@ -64,8 +64,8 @@ class UserForm(forms.ModelForm):
             hint_messages.append("Include at least one number.")
 
         # Check for a special character
-        if not any(char in "!@#$%^&*()-_=+" for char in password):
-            hint_messages.append("Include at least one special character (!@#$%^&*()-_=+).")
+        if not any(char in "!@#$%^&*()-_=+~{[}]?/;:," for char in password):
+            hint_messages.append("Include at least one special character (!@#$%^&*()-_=+~{[}]?/;:,).")
 
         # If there are any hints, return a combined message instead of raising an error immediately
         if hint_messages:

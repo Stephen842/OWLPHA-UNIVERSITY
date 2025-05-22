@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
-from .models import Users
+from django.contrib import messages
+from .models import User
 from .forms import UserForm, SigninForm
-# Create your views here.
 
 def signup(request):
     if request.user.is_authenticated:
@@ -42,7 +42,7 @@ def signin(request):
                 auth_login(request, user)
                 return redirect(request.GET.get('next', 'home'))
             else:
-                form.add_error(None, "Invalid credentials. Please do check and try again.")
+                messages.error(request, "Invalid credentials. Please check and try again.")
 
     else:
         form = SigninForm()
@@ -58,3 +58,9 @@ def signin(request):
 def logout(request):
     auth_logout(request)
     return redirect('home')
+
+def home(request):
+    context = {
+        'title' : 'Hello',
+    }
+    return render(request, 'pages/dashboard.html', context)

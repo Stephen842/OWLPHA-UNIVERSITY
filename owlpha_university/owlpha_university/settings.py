@@ -63,6 +63,34 @@ MIDDLEWARE = [
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
+AUTH_USER_MODEL = 'accounts.User'
+
+AUTHENTICATION_BACKENDS = [
+    #This is for the custom Auth backend for the entire project
+    'accounts.BackendAuth.CustomAuthBackend',
+
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SITE_ID = 1
+
+# To allow logout via GET
+ACCOUNT_LOGOUT_ON_GET = False
+
+# To prevent brute-force attacks
+ACCOUNT_RATE_LIMITS = {
+    'login_failed': '5/1m; 20/1h',  # 5 failed login attempts per minute (60 seconds) and 20 per hour
+}
+
+# Keep sessions for 7 days
+SESSION_COOKIE_AGE = 604800
+
+# Session expires when browser closes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Update session expiration on every request
+SESSION_SAVE_EVERY_REQUEST = True
+
 ROOT_URLCONF = 'owlpha_university.urls'
 
 TEMPLATES = [
@@ -158,3 +186,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'signin'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
+
+
+# This part is for SMTP services.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')

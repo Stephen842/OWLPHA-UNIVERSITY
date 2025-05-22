@@ -37,14 +37,20 @@ class UsersManager(BaseUserManager):
         )
         user.is_staff = True
         user.is_superuser = True
+
+        if user.is_staff is not True:
+            raise ValueError('Superuser must have is_staff=True')
+        if user.is_superuser is not True:
+            raise ValueError('Superuser must have is_superuser=True')
+        
         user.save(using=self._db)
         return user
 
-class Users(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
+class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     name = models.CharField(max_length=100, blank=False)
     username = models.CharField(max_length=100, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
-    country = CountryField(blank_label='Select Country',)
+    country = CountryField(blank=False, blank_label='Select Country',)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -73,5 +79,5 @@ class Users(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
         return self.username
     
     class Meta:
-        verbose_name_plural = 'My Users'
+        verbose_name_plural = 'My User'
 
