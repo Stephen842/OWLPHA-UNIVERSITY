@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     email = models.EmailField(unique=True, blank=False)
     country = CountryField(blank=False, blank_label='Select Country',)
     
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 

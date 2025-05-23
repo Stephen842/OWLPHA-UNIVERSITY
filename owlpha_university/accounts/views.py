@@ -1,9 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
 from .models import User
 from .forms import UserForm, SigninForm
+from .utils import account_activation_token, send_activation_email
+from django.utils.http import urlsafe_base64_decode
 
+'''
+    Handles user registration for OWLPHA UNIVERSITY.
+    Prevents already authenticated users from signing up again by redirecting to home.
+    On POST request with valid data:
+    - Creates a new user with inactive status (to require email verification).
+    - Saves the user and stores their ID in the session (used for resending activation).
+    - Sends an account activation email.
+    - Renders a page instructing the user to check their email.
+    On GET request, displays the registration form.
+'''
 def signup(request):
     if request.user.is_authenticated:
         # Redirect to home page if user is already logged in
@@ -12,8 +24,19 @@ def signup(request):
     if request.method == "POST":
         form = UserForm(request.POST)
         if form.is_valid():
-            form.save() # Password is already hashed in the form
-            return redirect(request.GET.get('next', 'signin'))
+            user = form.save(commit=False) # Password is already hashed in the form
+            user.is_active = False # To ensure account isn't active until email verification
+            user.save()
+
+            # Store user id in session for possible resend activation
+            request.session['activation_user_id'] = user.pk
+
+            # Send activation email
+            send_activation_email(user, request)
+
+            # Render the template that informs the user to check their email
+            return render(request, "pages/activation_instructions.html", {'user': user})
+
     else:
         form = UserForm()
 
@@ -24,6 +47,13 @@ def signup(request):
 
     return render(request, 'pages/signup.html', context)
 
+
+''''
+    Handles user sign-in using either email or username.
+    If already authenticated, redirects to the home page.
+    On valid form submission, attempts authentication and logs the user in.
+    If authentication fails, displays an error message.
+'''
 def signin(request):
     if request.user.is_authenticated:
         # Redirect to home page if user is already logged in
@@ -54,10 +84,62 @@ def signin(request):
 
     return render(request, 'pages/signin.html', context)
 
-# Handles user logout while keeping session data intact.
+
+'''
+Logs out the current user while preserving session data (if any non-auth-related data exists).
+After logout, the user is redirected to the home page.
+'''
 def logout(request):
     auth_logout(request)
     return redirect('home')
+
+
+'''
+    Handles the verification process when a user clicks the account activation link sent via email.
+    Decodes the user's ID from the URL, checks if the token is valid, activates the account if valid,
+    and renders the appropriate success or failure response.
+'''
+def activate_account(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        # Render success template
+        return render(request, 'pages/activation_success.html', {'user': user})
+    else:
+        # Render error template for invalid activation
+        return render(request, 'pages/activation_invalid.html')
+
+
+'''
+    Resends the account activation email to users who haven't completed verification.
+    If the account is already active, it redirects with an info message.
+    Otherwise, it sends the activation email and renders a confirmation page.
+'''
+def resend_activation_email(request, uidb64):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        messages.error(request, 'invalid activation link')
+        return redirect(signup) 
+
+    if user.is_active:
+        messages.info(request, 'Your account is already active.')
+        return redirect('signin')
+
+    # Send the activation email again
+    send_activation_email(user, request)
+
+    # Pass the user object to the template
+    return render(request, "pages/resend_activation_instructions.html", {'user': user})
+
 
 def home(request):
     context = {
