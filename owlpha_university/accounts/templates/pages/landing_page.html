@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv = 'X-UA-Compatible' content = 'IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv='content-type' content='text/html; charset = utf-8'/>
+    <meta name = 'robots' content = 'index, follow'>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" sizes="192x192" href="{% static 'favicon_io/android-chrome-192x192.png' %}">
+    <link rel="icon" sizes="256x256" href="{% static 'favicon_io/android-chrome-512x512.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon_io/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
+
+    <link rel = 'stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'>
+    <link rel = 'stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css'>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+      <!-- CSS Compilation -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <title> {{title}} </title>
+
+    <style>
+      body {
+        background-color: #0d0d0d;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+      }
+      .neon-text {
+        text-shadow: 0 0 5px #fff, 0 0 10px #f97316, 0 0 20px #f97316;
+      }
+    </style>
+  </head>
+
+  <body class="overflow-x-hidden">
+
+    <section class="relative h-screen w-full overflow-hidden">
+      <!-- Background Video -->
+      <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+        <source src="{% static 'bg_video.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black bg-opacity-90 z-10"></div>
+
+      <div class="relative z-20 flex justify-between w-full bg-transparent py-6 px-6">  
+        <!-- Logo + Title -->
+        <div class="flex items-center space-x-2">
+          <img src="{% static 'favicon_io/android-chrome-192x192.png' %}" alt="OWLPHA Logo" class="h-10 w-10"/>
+          <h2 class="text-xl font-[poppins] font-semibold bg-gradient-to-r from-purple-500 to-blue-500 text-transparent bg-clip-text flex items-center space-x-2 drop-shadow-md">OWLPHA University</h2>
+        </div>
+
+        <!-- Start Button -->
+        <div>
+          <button class="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg shadow">
+            Sign Up For Free
+          </button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="relative z-20 flex flex-col items-center justify-center h-full text-center px-4 -py-4">
+        <h1 class="text-4xl md:text-6xl neon-text font-extrabold uppercase text-white">
+          Ready to jump into Blockchain & Web3.0 World?
+        </h1>
+        <p class="mt-4 text-gray-300">
+          Start your journey into the decentralized future and blockchain technology.
+        </p>
+        <button class="mt-8 font-bold uppercase bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg shadow">
+          Start Education
+        </button>
+
+        <div class="flex items-center grid grid-cols-1 md:grid-cols-3 gap-10 mt-8">
+          <div>
+            <h2 class="text-4xl text-orange-500 font-bold">01</h2>
+            <p class="mt-4">Web3 beginners ​</p>
+          </div>
+
+          <div>
+            <h2 class="text-4xl text-orange-500 font-bold">02</h2>
+            <p class="mt-4">Developers transitioning into blockchain​</p>
+          </div>
+
+          <div>
+            <h2 class="text-4xl text-orange-500 font-bold">03</h2>
+            <p class="mt-4">Creators and writers​</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Education Format -->
+    <section class="py-20 bg-black text-center">
+      <h2 class="text-3xl md:text-4xl neon-text uppercase">Education Format</h2>
+      <div class="mt-12 space-y-8 max-w-4xl mx-auto">
+        <p>Own educational platform with a personal office</p>
+        <p>Telegram chats with mentors and training participants</p>
+        <p>Live market reviews and reviews of current projects</p>
+        <p>Practical live work with mentors in each direction</p>
+      </div>
+    </section>
+
+    <!-- Modules & Lessons -->
+    <section class="py-20 bg-orange-500 text-black">
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-4xl font-bold uppercase mb-10">Modules & Lessons</h2>
+        <div class="grid md:grid-cols-3 gap-8 text-left">
+          <div>
+            <h3 class="text-xl font-bold">01. Introduction to DeFi and Blockchain</h3>
+            <ul class="list-disc ml-5 mt-2">
+              <li>What is DeFi?</li>
+              <li>Basics of blockchain</li>
+              <li>Ethereum & smart contracts</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold">02. Decentralized Applications (DApps)</h3>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Examples and categories</li>
+              <li>User onboarding</li>
+              <li>Building DApps</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold">03. Smart Contracts</h3>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Understanding smart contracts</li>
+              <li>Solidity fundamentals</li>
+              <li>Deploying contracts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
+

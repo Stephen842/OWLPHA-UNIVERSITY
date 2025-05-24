@@ -143,6 +143,6 @@ def resend_activation_email(request, uidb64):
 
 def home(request):
     context = {
-        'title' : 'Hello',
+        'title' : 'OWLPHA University | Free & Bold Web3.0 Education for All',
     }
-    return render(request, 'pages/dashboard.html', context)
+    return render(request, 'pages/landing_page.html', context)

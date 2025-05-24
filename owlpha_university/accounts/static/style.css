@@ -1,0 +1,22 @@
+/* For webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* For Firefox */
+html {
+    scrollbar-width: none; /* Hides the scrollbar */
+}
+
+/* General overflow settings */
+body {
+    overflow: -moz-scrollbars-none; /* Fallback for old browsers */
+    overflow-y: scroll; /* Ensure content can scroll without a visible bar */
+
+
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%; /* Prevents content overflow */
+}
