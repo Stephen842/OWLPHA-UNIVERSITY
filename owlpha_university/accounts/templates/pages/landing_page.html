@@ -22,25 +22,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
       <!-- CSS Compilation -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
 
     <title> {{title}} </title>
-
-    <style>
-      body {
-        background-color: #0d0d0d;
-        color: #fff;
-        font-family: 'Poppins', sans-serif;
-      }
-      .neon-text {
-        text-shadow: 0 0 5px #fff, 0 0 10px #f97316, 0 0 20px #f97316;
-      }
-    </style>
   </head>
 
-  <body class="overflow-x-hidden">
+  <body class="overflow-x-hidden bg-black">
 
     <section class="relative h-screen w-full overflow-hidden">
       <!-- Background Video -->
@@ -102,46 +92,78 @@
 
 
     <!-- Education Format -->
-    <section class="py-20 bg-black text-center">
-      <h2 class="text-3xl md:text-4xl neon-text uppercase">Education Format</h2>
-      <div class="mt-12 space-y-8 max-w-4xl mx-auto">
-        <p>Own educational platform with a personal office</p>
-        <p>Telegram chats with mentors and training participants</p>
-        <p>Live market reviews and reviews of current projects</p>
-        <p>Practical live work with mentors in each direction</p>
+    <section class="relative w-full overflow-hidden mt-20 bg-black text-center">
+      <h2 class="text-3xl md:text-4xl neon-text uppercase hover:-translate-y-1 transform transition duration-300">We're shaping the <span class="italic uppercase font-serif text-gray-300">Web3 education frontier</span></h2>
+      <div class="mt-12 space-y-8 max-w-4xl mx-auto hover:-translate-y-1 transform transition duration-300">
+        <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
+          At OWLPHA University, we’re empowering future leaders with the skills to thrive in Web3, blockchain, and decentralized innovation.
+        </p>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-center items-center gap-1 py-8 px-4 min-h-screen">
+        <!-- Image Wrapper 1 -->
+        <div class="w-full md:w-1/2 relative group overflow-hidden rounded-bl shadow-lg h-[90vh] hover:-translate-y-1 transform transition duration-300">
+          <!-- Image with Zoom Effect -->
+          <img src="{% static 'learning0.jpg' %}"
+              alt="OWLPHA - Student learning"
+              class="w-full h-full object-cover transition duration-500 transform group-hover:scale-110">
+
+          <!-- Dark Overlay -->
+          <div class="absolute inset-0 bg-black bg-opacity-40 transition duration-500 group-hover:bg-opacity-60"></div>
+
+          <!-- Overlay Bottom-Right -->
+          <div class="absolute bottom-4 right-4 flex items-center space-x-2 bg-black/50 px-3 py-2 rounded-lg backdrop-blur-sm z-10">
+            <img src="{% static 'favicon_io/android-chrome-192x192.png' %}" alt="OWLPHA Logo" class="h-8 w-8">
+            <h2 class="text-sm font-[Poppins] font-semibold bg-gradient-to-r from-purple-500 to-blue-500 text-transparent bg-clip-text drop-shadow-md">
+              OWLPHA University
+            </h2>
+          </div>
+        </div>
+
+        <!-- Image Wrapper 2 -->
+        <div class="w-full md:w-1/2 relative group overflow-hidden rounded-br shadow-lg h-[90vh] hover:-translate-y-1 transform transition duration-300">
+          <img src="{% static 'learning1.jpg' %}"
+              alt="OWLPHA - Student learning"
+              class="w-full h-full object-cover transition duration-500 transform group-hover:scale-110">
+
+          <div class="absolute inset-0 bg-black bg-opacity-40 transition duration-500 group-hover:bg-opacity-60"></div>
+
+          <div class="absolute bottom-4 right-4 flex items-center space-x-2 bg-black/50 px-3 py-2 rounded-lg backdrop-blur-sm z-10">
+            <img src="{% static 'favicon_io/android-chrome-192x192.png' %}" alt="OWLPHA Logo" class="h-8 w-8">
+            <h2 class="text-sm font-[Poppins] font-semibold bg-gradient-to-r from-purple-500 to-blue-500 text-transparent bg-clip-text drop-shadow-md">
+              OWLPHA University
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-4">
+        <h2 class="text-3xl md:text-4xl font-bold font-[Poppins] mb-4 neon-text uppercase hover:-translate-y-1 transform transition duration-300">Our Partners</h2>
+        <p class="text-lg bg-gradient-to-r from-purple-500 to-blue-500 text-transparent bg-clip-text drop-shadow-md hover:-translate-y-1 transform transition duration-300">
+          We’re actively open to meaningful <span class="font-semibold">partnerships</span> and <span class="font-semibold">collaborations</span> that align with our mission to democratize Web3 education globally.
+        </p>
       </div>
     </section>
 
-    <!-- Modules & Lessons -->
-    <section class="py-20 bg-orange-500 text-black">
-      <div class="max-w-6xl mx-auto text-center">
-        <h2 class="text-4xl font-bold uppercase mb-10">Modules & Lessons</h2>
-        <div class="grid md:grid-cols-3 gap-8 text-left">
-          <div>
-            <h3 class="text-xl font-bold">01. Introduction to DeFi and Blockchain</h3>
-            <ul class="list-disc ml-5 mt-2">
-              <li>What is DeFi?</li>
-              <li>Basics of blockchain</li>
-              <li>Ethereum & smart contracts</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold">02. Decentralized Applications (DApps)</h3>
-            <ul class="list-disc ml-5 mt-2">
-              <li>Examples and categories</li>
-              <li>User onboarding</li>
-              <li>Building DApps</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold">03. Smart Contracts</h3>
-            <ul class="list-disc ml-5 mt-2">
-              <li>Understanding smart contracts</li>
-              <li>Solidity fundamentals</li>
-              <li>Deploying contracts</li>
-            </ul>
-          </div>
-        </div>
+    <section class="bg-[#0f0f11] px-6 md:px-12 py-16 font-[Inter] text-white">
+      <div class="space-y-6">
+        <p class="text-3xl leading-relaxed font-semibold transition-all duration-[1200ms] ease-in opacity-100 translate-y-6 scroll-fade-in hover:-translate-y-1 transform transition duration-300">
+          <span class="text-white">
+            The future of education is decentralized. 
+            OWLPHA University is at the forefront of this global transformation — empowering learners to explore the world of Web3, blockchain, and onchain innovation.
+          </span>
+        </p>
+
+        <p class="text-3xl leading-relaxed font-medium text-gray-300 transition-all duration-[1200ms] ease-in scroll-fade-in hover:-translate-y-1 transform transition duration-300">
+          From curious beginners to emerging developers and creators, we provide open access to world-class education designed to unlock the opportunities of decentralized finance, smart contracts, and tokenized systems.
+          <br /><br />
+          Our growing network of educators, engineers, and blockchain-native minds share one bold vision:
+          <span class="italic font-medium text-gray-400"> To make Web3 education accessible, community-driven, and globally impactful.</span>
+        </p>
+
+        <p class="text-3xl leading-relaxed font-medium text-gray-500 transition-all duration-[1200ms] ease-in scroll-fade-in hover:-translate-y-1 transform transition duration-300">
+          <em>Join the movement. Learn the new internet — the OWLPHA way.</em>
+        </p>
       </div>
     </section>
   </body>

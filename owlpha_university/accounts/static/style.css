@@ -14,9 +14,29 @@ body {
     overflow-y: scroll; /* Ensure content can scroll without a visible bar */
 
 
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     max-width: 100%; /* Prevents content overflow */
+}
+
+.neon-text {
+    text-shadow: 0 0 5px #fff, 0 0 10px #f97316, 0 0 20px #f97316;
+}
+
+.scroll-fade-in {
+    will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .scroll-fade-in {
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    .scroll-fade-in.show {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
 }
