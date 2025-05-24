@@ -54,29 +54,31 @@
 
       <div class="relative z-20 flex justify-between w-full bg-transparent py-6 px-6">  
         <!-- Logo + Title -->
-        <div class="flex items-center space-x-2">
+        <a href="/" class="flex items-center space-x-2">
           <img src="{% static 'favicon_io/android-chrome-192x192.png' %}" alt="OWLPHA Logo" class="h-10 w-10"/>
           <h2 class="text-xl font-[poppins] font-semibold bg-gradient-to-r from-purple-500 to-blue-500 text-transparent bg-clip-text flex items-center space-x-2 drop-shadow-md">OWLPHA University</h2>
-        </div>
+        </a>
 
         <!-- Start Button -->
         <div>
-          <button class="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg shadow">
+          <a href="{% url 'signup' %}">
+          <button class="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-lg shadow transition duration-300 ease-in-out">
             Sign Up For Free
           </button>
+          </a>
         </div>
       </div>
 
       <!-- Content -->
-      <div class="relative z-20 flex flex-col items-center justify-center h-full text-center px-4 -py-4">
+      <div class="relative z-20 flex flex-col items-center justify-center h-full text-center px-4 -py-4 transform hover:scale-105 hover:-translate-y-1 transition duration-300 ease-in-out">
         <h1 class="text-4xl md:text-6xl neon-text font-extrabold uppercase text-white">
           Ready to jump into Blockchain & Web3.0 World?
         </h1>
         <p class="mt-4 text-gray-300">
           Start your journey into the decentralized future and blockchain technology.
         </p>
-        <button class="mt-8 font-bold uppercase bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg shadow">
-          Start Education
+        <button class="mt-8 font-bold uppercase bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg shadow transition duration-300 ease-in-out">
+          Tailored For
         </button>
 
         <div class="flex items-center grid grid-cols-1 md:grid-cols-3 gap-10 mt-8">
