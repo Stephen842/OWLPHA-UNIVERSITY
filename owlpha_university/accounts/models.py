@@ -48,9 +48,9 @@ class UsersManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     name = models.CharField(max_length=100, blank=False)
-    username = models.CharField(max_length=100, unique=True, blank=False)
+    username = models.CharField(max_length=100, unique=True, blank=True)
     email = models.EmailField(unique=True, blank=False)
-    country = CountryField(blank=False, blank_label='Select Country',)
+    country = CountryField(blank=True, blank_label='Select Country',)
     
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
