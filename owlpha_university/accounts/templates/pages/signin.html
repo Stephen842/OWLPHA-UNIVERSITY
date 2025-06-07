@@ -1,5 +1,6 @@
 {% load static %}
 {% load widget_tweaks %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,23 +67,28 @@
                         </div>
 
                         <form method="POST" class="space-y-5">
-
-                            {% if form.errors %}
-                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                                    <strong class="font-bold">Oops! Something went wrong:</strong>
-                                    <ul class="mt-2 list-disc list-inside">
-                                        {% for field, errors in form.errors.items %}
-                                            {% for error in errors %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </ul>
+                            {% if messages %}
+                                <div class="mb-6">
+                                    {% for message in messages %}
+                                        <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg shadow-sm">
+                                            <div class="flex items-start gap-2">
+                                                <svg class="h-5 w-5 text-red-500 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.93-2.5L13.93 4.5a2 2 0 00-3.86 0L3.14 16.5A2 2 0 005.07 19z" />
+                                                </svg>
+                                                <div>
+                                                    <p class="text-sm">{{ message }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             {% endif %}
-                            
+
                             {% csrf_token %}
                             <div>
-                                <label for="identifier" class="block text-sm font-medium text-gray-700">Enter Email or Username</label>
+                                <label for="identifier" class="block text-sm font-medium text-gray-700">Email or Username</label>
                                  {{ form.identifier|add_class:"w-full mt-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"}}
                             </div>
 
@@ -99,10 +105,13 @@
                                 <span class="text-gray-400 text-sm">or</span>
                             </div>
 
-                            <button type="button" class="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-md hover:bg-gray-50 transition">
-                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5" />
-                                <span class="text-sm font-medium text-gray-600">Sign In with Google</span>
-                            </button>
+                            <form action="{% provider_login_url 'google' %}" method="post">
+                                {% csrf_token %}
+                                <button type="button" class="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-md hover:bg-gray-50 transition">
+                                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5" />
+                                    <span class="text-sm font-medium text-gray-600">Sign up with Google</span>
+                                </button>
+                            </form>
 
                             <p class="text-center text-sm text-gray-600 mt-4">
                                 Don't have an account?

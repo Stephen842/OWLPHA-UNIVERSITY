@@ -29,6 +29,7 @@ urlpatterns = [
     #path('', include('conference.urls')),
     #path('', include('courses.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('accounts/', include('allauth.urls')),
 ]
 
 #This is a flag for serving errors pages

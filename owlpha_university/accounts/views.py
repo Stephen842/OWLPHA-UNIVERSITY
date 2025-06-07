@@ -146,3 +146,9 @@ def home(request):
         'title' : 'OWLPHA University | Free & Bold Web3.0 Education for All',
     }
     return render(request, 'pages/landing_page.html', context)
+
+def testing(request):
+    context = {
+        'title' : 'OWLPHA University | Free & Bold Web3.0 Education for All',
+    }
+    return render(request, 'pages/testing.html', context)

@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('testing', views.testing, name='testing'),
     
     # Sign Up, Sign in, Sign Out and Password reset routes
     path('signup/', views.signup, name='signup'),
