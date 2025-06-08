@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, render
+from django.urls import reverse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
+from django.utils.http import urlsafe_base64_decode
 from .models import User
 from .forms import UserForm, SigninForm
 from .utils import account_activation_token, send_activation_email
-from django.utils.http import urlsafe_base64_decode
 
-'''
+def signup(request):
+
+    '''
     Handles user registration for OWLPHA UNIVERSITY.
     Prevents already authenticated users from signing up again by redirecting to home.
     On POST request with valid data:
@@ -15,8 +18,8 @@ from django.utils.http import urlsafe_base64_decode
     - Sends an account activation email.
     - Renders a page instructing the user to check their email.
     On GET request, displays the registration form.
-'''
-def signup(request):
+    '''
+
     if request.user.is_authenticated:
         # Redirect to home page if user is already logged in
         return redirect('home')
@@ -48,13 +51,15 @@ def signup(request):
     return render(request, 'pages/signup.html', context)
 
 
-''''
+def signin(request):
+
+    ''''
     Handles user sign-in using either email or username.
     If already authenticated, redirects to the home page.
     On valid form submission, attempts authentication and logs the user in.
     If authentication fails, displays an error message.
-'''
-def signin(request):
+    '''
+
     if request.user.is_authenticated:
         # Redirect to home page if user is already logged in
         return redirect('home')
@@ -85,21 +90,22 @@ def signin(request):
     return render(request, 'pages/signin.html', context)
 
 
-'''
-Logs out the current user while preserving session data (if any non-auth-related data exists).
-After logout, the user is redirected to the home page.
-'''
 def logout(request):
+
+    '''
+    Logs out the current user while preserving session data (if any non-auth-related data exists).
+    After logout, the user is redirected to the home page.
+    '''
     auth_logout(request)
     return redirect('home')
 
 
-'''
+def activate_account(request, uidb64, token):
+    '''
     Handles the verification process when a user clicks the account activation link sent via email.
     Decodes the user's ID from the URL, checks if the token is valid, activates the account if valid,
     and renders the appropriate success or failure response.
-'''
-def activate_account(request, uidb64, token):
+    '''
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
@@ -117,12 +123,14 @@ def activate_account(request, uidb64, token):
         return render(request, 'pages/activation_invalid.html')
 
 
-'''
+def resend_activation_email(request, uidb64):
+
+    '''
     Resends the account activation email to users who haven't completed verification.
     If the account is already active, it redirects with an info message.
     Otherwise, it sends the activation email and renders a confirmation page.
-'''
-def resend_activation_email(request, uidb64):
+    '''
+
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
@@ -140,6 +148,28 @@ def resend_activation_email(request, uidb64):
     # Pass the user object to the template
     return render(request, "pages/resend_activation_instructions.html", {'user': user})
 
+
+def custom_google_callback(request):
+
+    """
+    Handles Google OAuth2 login callback.
+    If the user cancels the login (e.g., closes Google consent), 
+    it redirects to the custom sign-in page with a message.
+    Otherwise, it passes control to the default allauth flow.
+    """
+
+    error = request.GET.get('error')
+
+    if error in ['access_denied', 'cancelled']:
+        # User cancelled login - redirect to the custom sign in page
+        return redirect(reverse('signin') + '?auth=failed')
+    
+    # Otherwise, let allauth handle the rest
+    from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+    from allauth.socialaccount.providers.oauth2.views import OAuth2LoginView, OAuth2CallbackView
+
+    view = OAuth2CallbackView.adapter_view(GoogleOAuth2Adapter)
+    return view(request)
 
 def home(request):
     context = {

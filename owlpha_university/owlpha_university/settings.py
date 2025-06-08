@@ -119,13 +119,7 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 # Instead of ACCOUNT_EMAIL_REQUIRED and ACCOUNT_USERNAME_REQUIRED
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
-#ACCOUNT_EMAIL_REQUIRED = True
-
-#ACCOUNT_USERNAME_REQUIRED = True
-
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'  # optional, if not already set
-
-#ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 # To allow logout via GET
 ACCOUNT_LOGOUT_ON_GET = False
@@ -149,6 +143,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # Update session expiration on every request
 SESSION_SAVE_EVERY_REQUEST = True
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ROOT_URLCONF = 'owlpha_university.urls'
 
@@ -245,7 +243,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'signin'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 
 # This part is for SMTP services.

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from accounts import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404, handler403, handler500
@@ -29,6 +30,7 @@ urlpatterns = [
     #path('', include('conference.urls')),
     #path('', include('courses.urls')),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('accounts/google/login/callback/', views.custom_google_callback, name='google_callback'),
     path('accounts/', include('allauth.urls')),
 ]
 
