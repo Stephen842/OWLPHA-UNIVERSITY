@@ -2,6 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from django.utils import timezone
+from datetime import timedelta
 from .models import User
 
 class UserForm(forms.ModelForm):
@@ -36,17 +38,43 @@ class UserForm(forms.ModelForm):
     
     def clean_username(self):
         username = self.cleaned_data.get('username').lower()  # Convert to lowercase
-        if User.objects.filter(username=username).exists():
-            raise forms.ValidationError('Username already taken.')
-        return username
+    
+        try:
+            existing_user = User.objects.get(username=username)
+
+            # If user exists and is inactive + older than 3 days, delete them
+            if not existing_user.is_active:
+                if timezone.now() - existing_user.date_joined > timedelta(days=3):
+                    existing_user.delete()
+                    return username
+                else:
+                    raise forms.ValidationError('This username is registered but not yet activated. Please check your inbox or try resending the activation link.')
+            else:
+                raise forms.ValidationError('Username already taken.')
+            
+        except User.DoesNotExist:
+            return username
 
     def clean_email(self):
         email = self.cleaned_data.get('email').lower() # Convert to lowercase
         if len(email) < 8:
             raise forms.ValidationError('Email address must be 8 characters long')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Email Address Already Registered...')
-        return email
+        
+        try:
+            existing_user = User.objects.get(email=email)
+
+            # If user exists and is inactive + older than 3 days, delete them
+            if not existing_user.is_active:
+                if timezone.now() - existing_user.date_joined > timedelta(days=3):
+                    existing_user.delete()
+                    return email
+                else:
+                    raise forms.ValidationError('This email is registered but not yet activated. Please check your inbox or try resending the activation link.')
+            else:
+                raise forms.ValidationError('Email Address Already Registered...')
+            
+        except User.DoesNotExist:
+            return email
    
     def clean_password1(self):
         password = self.cleaned_data.get('password1')

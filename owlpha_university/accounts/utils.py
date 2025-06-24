@@ -5,12 +5,32 @@ from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     """
     Generates a secure token for activating user accounts.
+    Includes a 3-day expiration policy based on `date_joined`.
     """
-    pass
+
+    def _make_hash_value(self, user, timestamp):
+        return f'{user.pk}{timestamp}{user.is_active}'
+    
+    def check_token(self, user, token):
+        # Django first check for default token logic
+        if not super().check_token(user, token):
+            return False
+        
+        # Then Adds time based expiration logic (3 days)
+        created_at = user.date_joined
+        now = timezone.now()
+
+        # Expire token if more than 3 days
+        if (now - created_at) > timedelta(days=3):
+            return False
+        
+        return True
 
 account_activation_token = AccountActivationTokenGenerator()
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Activate Your OWLPHA University Account</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f6f9fc;
+                margin: 0;
+                padding: 0;
+                color: #333;
+            }
+            .container {
+                max-width: 620px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                padding: 40px 30px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header img {
+                max-height: 80px;
+            }
+            .content {
+                line-height: 1.7;
+            }
+            .btn {
+                display: inline-block;
+                background-color: #4f46e5;
+                color: #fff;
+                text-decoration: none;
+                padding: 14px 24px;
+                margin: 30px 0;
+                border-radius: 6px;
+                font-weight: bold;
+            }
+            .activation-url {
+                font-size: 13px;
+                background: #f9fafb;
+                padding: 12px;
+                border-radius: 6px;
+                word-break: break-all;
+                border: 1px dashed #ddd;
+            }
+            .footer {
+                font-size: 0.9em;
+                color: #777;
+                text-align: center;
+                margin-top: 40px;
+            }
+            .highlight {
+                font-weight: bold;
+                color: #4f46e5;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <img src="https://media.licdn.com/dms/image/v2/D4D0BAQHUyn95gj3h1A/company-logo_200_200/company-logo_200_200/0/1708529125650?e=1756339200&v=beta&t=oYsO87bZWByvk_L9EPHKtGnuVSK2DCNZq1Wdqeoiyfc" alt="OWLPHA University Logo">
+                <h2>Welcome to OWLPHA University</h2>
+            </div>
+            <div class="content">
+                <p>Hi {{ user.name|default:user.username }},</p>
+
+                <p>
+                    You didn’t just join <span class="highlight">OWLPHA University</span> — you stepped into the future of decentralized education.
+                </p>
+
+                <p>
+                    To get started, please verify your account by clicking the button below:
+                </p>
+
+                <p style="text-align: center;">
+                    <a href="{{ activation_link }}" class="btn">Activate My Account</a>
+                </p>
+
+                <p>If the button above doesn’t work, copy and paste the following link into your browser:</p>
+                <div class="activation-url">
+                    {{ activation_link }}
+                </div>
+
+                <p>
+                    Once your account is verified, you’ll unlock access to free courses, blockchain certifications, and our vibrant learning community.
+                </p>
+
+                <p>See you inside,<br><strong>The OWLPHA Team</strong></p>
+            </div>
+
+            <div class="footer" style="text-align: center; margin-top: 40px;">
+                <div class="social-links" style="margin-bottom: 12px;">
+                    <a href="https://www.linkedin.com/company/owlphadao/posts/?feedView=all" target="_blank" style="margin: 0 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/145/145807.png" alt="LinkedIn" width="24" height="24">
+                    </a>
+
+                    <a href="https://x.com/OwlphaDAO_" target="_blank" style="margin: 0 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/5968/5968958.png" alt="Twitter (X)" width="24" height="24">
+                    </a>
+
+                    <a href="https://discord.gg/VSFAfmvdTF" target="_blank" style="margin: 0 8px;">
+                        <img src="https://cdn-icons-png.flaticon.com/128/3670/3670157.png" alt="Discord" width="24" height="24">
+                    </a>
+                </div>
+
+                <p style="font-size: 13px; color: #888;">
+                    &copy; {% now "Y" %} OWLPHA University — A product of <strong>OWLPHADAO</strong>.
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -4,6 +4,7 @@ from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.utils import timezone
 from courses.models import Course, Badge, Interest
 
 
@@ -56,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     username = models.CharField(max_length=50, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
     country = CountryField(blank=False, blank_label='Select Country',)
+    date_joined = models.DateTimeField(default=timezone.now)
     
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -105,7 +107,6 @@ class UserProfile(models.Model):
         ]
     )
     date_of_birth = models.DateField(blank=True, null=True)
-    joined_at = models.DateTimeField(auto_now_add=True)
 
     # User Socials & Interests
     interests = models.ManyToManyField(Interest, blank=True)
