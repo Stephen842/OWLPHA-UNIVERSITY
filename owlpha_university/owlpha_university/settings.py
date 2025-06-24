@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
+    'django.contrib.sites',
+    'accounts.apps.AccountsConfig',
     'blog',
     'channels',
     'chat',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django_browser_reload',
     'django.contrib.humanize',
     'django_countries',
+    'phonenumber_field',
 
     # Third party Auth Apps
     'allauth',

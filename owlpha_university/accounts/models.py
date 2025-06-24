@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django_countries.fields import CountryField
+from phonenumber_field.modelfields import PhoneNumberField
+from django.conf import settings
+from django.contrib.sites.models import Site
+from courses.models import Course, Badge, Interest
+
 
 # Create your models here.
 
@@ -47,14 +52,16 @@ class UsersManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
-    name = models.CharField(max_length=100, blank=False)
-    username = models.CharField(max_length=100, unique=True, blank=False)
+    name = models.CharField(max_length=50, blank=False)
+    username = models.CharField(max_length=50, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
     country = CountryField(blank=False, blank_label='Select Country',)
     
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+    referral_code = models.CharField(max_length=10, blank=True, null=True)
 
     objects = UsersManager()
 
@@ -80,3 +87,62 @@ class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     
     class Meta:
         verbose_name_plural = 'My User'
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+
+    # User Basic Info
+    bio = models.TextField(blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    phone_number = PhoneNumberField(blank=True, null=True, region='NG')
+    gender = models.CharField(
+        max_length=10,
+        blank=True,
+        choices=[
+            ('male', 'Male'),
+            ('female', 'Female'),
+            ('other', 'Other')
+        ]
+    )
+    date_of_birth = models.DateField(blank=True, null=True)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    # User Socials & Interests
+    interests = models.ManyToManyField(Interest, blank=True)
+    github_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+    twitter_link = models.URLField(blank=True, null=True)
+    discord_handle  = models.CharField(max_length=50, blank=True, null=True)
+
+    # User Learning Goals & Progress
+    learning_goals = models.TimeField(blank=True, null=True)
+    current_courses = models.ManyToManyField(Course, related_name='active_learners', blank=True)
+    completed_course = models.ManyToManyField(Course, related_name='graduates', blank=True)
+    course_progress = models.JSONField(default=dict)
+
+    # Gamification
+    xp_points = models.IntegerField(default=20)
+    badges = models.ManyToManyField(Badge, blank=True)
+
+    # User Web3 wallet
+    wallet_address = models.CharField(max_length=255, blank=True, null=True)
+
+    # User Referral Code
+    referral_code = models.CharField(max_length=100, unique=True, blank=True, null=True)
+
+    def generate_referral_url(self):
+        current_site = Site.objects.get_current()
+        domain = current_site.domain
+        return f'https://{domain}/signup?ref={self.referral_code}'
+    
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+    
+    # User roles
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('instructor', 'Instructor'),
+        ('admin', 'Admin'),
+    ]
+
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
