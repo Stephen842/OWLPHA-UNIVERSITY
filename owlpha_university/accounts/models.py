@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.sites.models import Site
 from django.utils import timezone
 from courses.models import Course, Badge, Interest
@@ -135,6 +136,16 @@ class UserProfile(models.Model):
         current_site = Site.objects.get_current()
         domain = current_site.domain
         return f'https://{domain}/signup?ref={self.referral_code}'
+    
+    def get_absolute_url(self):
+        return reverse(
+            'user_profile_dashboard',
+            kwargs={
+                'username': self.user.username,
+                'referral_code': self.referral_code,
+                'date_joined': self.user.date_joined.strftime('%Y-%m-%d')
+            }
+        )
     
     def __str__(self):
         return f"{self.user.username}'s Profile"

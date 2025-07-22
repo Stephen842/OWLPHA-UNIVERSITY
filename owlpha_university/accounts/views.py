@@ -3,9 +3,10 @@ from django.urls import reverse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode
+from .utils import account_activation_token, send_activation_email
+from django.contrib.auth.decorators import login_required
 from .models import User
 from .forms import UserForm, SigninForm
-from .utils import account_activation_token, send_activation_email
 
 def signup(request):
 
@@ -62,7 +63,8 @@ def signin(request):
 
     if request.user.is_authenticated:
         # Redirect to home page if user is already logged in
-        return redirect('home')
+        profile = request.user.profile
+        return redirect(profile.get_absolute_url())
 
     if request.method == 'POST':
         form = SigninForm(request.POST)
@@ -75,7 +77,10 @@ def signin(request):
 
             if user:
                 auth_login(request, user)
-                return redirect(request.GET.get('next', 'home'))
+                next_url = request.GET.get('next')
+                if next_url:
+                    return redirect(next_url)
+                return redirect(user.profile.get_absolute_url())
             else:
                 messages.error(request, "Invalid credentials. Please check and try again.")
 
@@ -93,7 +98,7 @@ def signin(request):
 def logout(request):
 
     '''
-    Logs out the current user while preserving session data (if any non-auth-related data exists).
+    Logs out the current user while preserving ses sion data (if any non-auth-related data exists).
     After logout, the user is redirected to the home page.
     '''
     auth_logout(request)
@@ -170,6 +175,23 @@ def custom_google_callback(request):
 
     view = OAuth2CallbackView.adapter_view(GoogleOAuth2Adapter)
     return view(request)
+
+@login_required
+def user_profile_dashboard(request, username, referral_code, date_joined):
+    user = request.user
+    profile = user.profile
+
+    if(
+        username.lower() != user.username.lower() or referral_code != profile.referral_code or date_joined != user.date_joined.strftime('%Y-%m-%d')
+    ):
+        return HttpResponseForbidden('Unauthorized Access')
+    
+    context = {
+        'user': user,
+        'profile': profile,
+        'title': 'Owlpha University'
+    }
+    return render(request, 'pages/profile_dashboard.html', context)
 
 def home(request):
     context = {
