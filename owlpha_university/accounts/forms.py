@@ -4,7 +4,7 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 from django.utils import timezone
 from datetime import timedelta
-from .models import User
+from .models import User, UserProfile
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -127,3 +127,27 @@ class SigninForm(forms.Form):
         if identifier:
             return identifier.lower()  # Convert to lowercase for case insensitivity
         return identifier
+
+class UserFormEdit(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'country']  
+
+class ProfileSettingsForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'bio', 'profile_image', 'phone_number', 'gender', 'date_of_birth',
+            'github_link', 'linkedin_link', 'twitter_link', 'learning_goals',
+            'wallet_address'
+        ]
+
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def clean_bio(self):
+        bio = self.cleaned_data.get('bio', '')
+        if len(bio) > 150:
+            raise forms.ValidationError('Bio must be 150 Characters or fewer.')
+        return bio

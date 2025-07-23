@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, render
+from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
@@ -6,7 +7,7 @@ from django.utils.http import urlsafe_base64_decode
 from .utils import account_activation_token, send_activation_email
 from django.contrib.auth.decorators import login_required
 from .models import User
-from .forms import UserForm, SigninForm
+from .forms import UserForm, SigninForm, ProfileSettingsForm, UserFormEdit
 
 def signup(request):
 
@@ -192,6 +193,35 @@ def user_profile_dashboard(request, username, referral_code, date_joined):
         'title': 'Owlpha University'
     }
     return render(request, 'pages/profile_dashboard.html', context)
+
+@login_required
+def profile_settings(request):
+    user = request.user
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        user_form = UserFormEdit(request.POST, instance=user)
+        profile_form = ProfileSettingsForm(request.POST, request.FILES, instance=profile)
+        if user_form.is_valid() and profile_form.is_valid:
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect(
+                'user_profile_dashboard',
+                username=user.username,
+                referral_code=profile.referral_code,
+                date_joined=user.date_joined.strftime('%Y-%m-%d')
+            )
+    else:
+        user_form = UserFormEdit(instance=user)
+        profile_form = ProfileSettingsForm(instance=profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'title': 'Account Settings | Owlpha University'
+    }
+    return render(request, 'pages/profile_setting.html', context)
 
 def home(request):
     context = {
