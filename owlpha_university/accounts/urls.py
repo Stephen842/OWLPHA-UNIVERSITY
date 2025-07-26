@@ -7,6 +7,9 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('account/<str:username>/<str:referral_code>/<str:date_joined>/dashboard/', views.user_profile_dashboard, name='user_profile_dashboard'),
     path('account/user/settings/', views.profile_settings, name='profile_settings'),
+    path('account/email/confirm/', views.send_email_change_confirmation, name='send_email_change_confirmation'),
+    path('account/email/verify/<uidb64>/<token>/', views.confirm_email_change, name='confirm_email_change'),
+    
     path('testing', views.testing, name='testing'),
     
     # Sign Up, Sign in, Sign Out and Password reset routes

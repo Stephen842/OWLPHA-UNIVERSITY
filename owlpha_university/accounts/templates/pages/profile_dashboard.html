@@ -127,8 +127,7 @@
                     {% endif %}
                     <div>
                         <h1 class="text-xl font-semibold bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">{{ user.name }}</h1>
-                        <p class="text-gray-700 text-md">{{ profile.bio|default:"Edit Bio in Settings" }}</p>
-                        <p class="text-gray-700 text-md">{{ profile.role|title }}</p>
+                        <p class="text-gray-700 text-md mt-1">{{ profile.bio|default:"Edit Bio in Settings" }}</p>
                     </div>
                 </div>
             </div>
@@ -137,7 +136,7 @@
             <div class="relative bg-white rounded-xl shadow p-6 mb-6 text-gray-700 hover:shadow-md transition">
                 <h2 class="text-lg font-semibold mb-4">Personal Information</h2>
 
-                <a href="#" class="absolute top-6 right-6 inline-block bg-gray-600 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-gray-500 transition">
+                <a href="{% url 'profile_settings' %}" class="absolute top-6 right-6 inline-block bg-gray-600 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-gray-500 transition">
                     <i class="bi bi-pencil"></i> Edit
                 </a>
 
@@ -164,13 +163,7 @@
         
                     <div class="col-span-1">
                         <p class="font-medium">Phone Number</p>
-                        <div class="flex flex-wrap gap-2">
-                            {% for interest in profile.interests.all %}
-                                <span class="text-gray-500 px-2 py-1 rounded-full text-sm">{{ interest.phone_number }}</span>
-                            {% empty %}
-                                <span class="text-gray-500">-</span>
-                            {% endfor %}
-                        </div>
+                        <p class="text-gray-500">{{ profile.phone_number|title|default:"-" }}</p>
                     </div>
         
                     <div>

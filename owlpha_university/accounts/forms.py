@@ -131,7 +131,17 @@ class SigninForm(forms.Form):
 class UserFormEdit(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'country']  
+        fields = ['name', 'username', 'email', 'country']
+
+    def save(self, commit = True):
+        user = super().save(commit=False)
+        new_email = self.cleaned_data.get('email')
+
+        if new_email and new_email != user.email:
+            user.new_email = new_email
+        if commit:
+            user.save()
+        return user
 
 class ProfileSettingsForm(forms.ModelForm):
     class Meta:
@@ -139,7 +149,7 @@ class ProfileSettingsForm(forms.ModelForm):
         fields = [
             'bio', 'profile_image', 'phone_number', 'gender', 'date_of_birth',
             'github_link', 'linkedin_link', 'twitter_link', 'learning_goals',
-            'wallet_address'
+            'wallet_address', 'interests'
         ]
 
         widgets = {
@@ -148,6 +158,6 @@ class ProfileSettingsForm(forms.ModelForm):
 
     def clean_bio(self):
         bio = self.cleaned_data.get('bio', '')
-        if len(bio) > 150:
+        if len(bio) > 260:
             raise forms.ValidationError('Bio must be 150 Characters or fewer.')
         return bio

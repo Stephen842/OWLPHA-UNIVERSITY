@@ -1,9 +1,15 @@
-from django.shortcuts import render, redirect, render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
 from django.contrib import messages
-from django.utils.http import urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.template.loader import render_to_string
 from .utils import account_activation_token, send_activation_email
 from django.contrib.auth.decorators import login_required
 from .models import User
@@ -202,16 +208,11 @@ def profile_settings(request):
     if request.method == 'POST':
         user_form = UserFormEdit(request.POST, instance=user)
         profile_form = ProfileSettingsForm(request.POST, request.FILES, instance=profile)
-        if user_form.is_valid() and profile_form.is_valid:
+        if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             messages.success(request, 'Profile updated successfully!')
-            return redirect(
-                'user_profile_dashboard',
-                username=user.username,
-                referral_code=profile.referral_code,
-                date_joined=user.date_joined.strftime('%Y-%m-%d')
-            )
+            return redirect( 'profile_settings')
     else:
         user_form = UserFormEdit(instance=user)
         profile_form = ProfileSettingsForm(instance=profile)
@@ -219,9 +220,62 @@ def profile_settings(request):
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
+        'profile': profile,
         'title': 'Account Settings | Owlpha University'
     }
     return render(request, 'pages/profile_setting.html', context)
+
+
+@login_required
+def send_email_change_confirmation(request):
+    user = request.user
+    if not user.new_email:
+        messages.warning(request, 'No new email to confirm.')
+        return redirect('profile_settings')
+    
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    confirm_url = request.build_absolute_uri(
+        reverse('confirm_email_change', kwargs={'uidb64': uid, 'token': token})
+    )
+
+    email_body = render_to_string('pages/confirm_new_email.html', {
+        'username': user.username,
+        'confirm_url': confirm_url,
+    })
+
+    send_mail(
+        subject='Verify your new email',
+        message='Please view this email in HTML mode.',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.new_email],
+        html_message=email_body,
+    )
+
+    messages.success(request, f'Confirmation link sent to {user.new_email}')
+    return redirect('profile_settings')
+
+def confirm_email_change(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (User.DoesNotExist, ValueError, TypeError):
+        user = None
+    
+    if user and default_token_generator.check_token(user, token):
+        if user.new_email:
+            user.email = user.new_email
+            user.new_email = ''
+            user.save()
+            messages.success(request, 'Email address updated successfully.')
+        return redirect('profile_settings')
+    
+    messages.error(request, 'Invalid or expired confirmation link')
+    return redirect('profile_settings')
+
+
+
 
 def home(request):
     context = {

@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
     name = models.CharField(max_length=50, blank=False)
     username = models.CharField(max_length=50, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
+    new_email = models.EmailField(blank=True, null=True, unique=True)
     country = CountryField(blank=False, blank_label='Select Country',)
     date_joined = models.DateTimeField(default=timezone.now)
     
