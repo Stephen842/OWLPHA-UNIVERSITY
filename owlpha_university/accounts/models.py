@@ -10,9 +10,14 @@ from courses.models import Course, Badge, Interest
 
 
 # Create your models here.
-
-'''This is for my Custom User model '''
 class UsersManager(BaseUserManager):
+    """
+    Custom manager for User.
+
+    Handles:
+    - create_user: standard user with email, name, username, country.
+    - create_superuser: admin user with elevated permissions.
+    """
     def create_user(self, email, name, username, country, password=None):
         if not email:
             raise ValueError('Enter Email address')
@@ -54,6 +59,15 @@ class UsersManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
+    """
+    Custom User model for OWLPHA.
+
+    Fields:
+    - Core: name, username, email, country, date_joined.
+    - Email update: new_email for verifying changes.
+    - Access control: is_active, is_staff, is_superuser, is_verified.
+    - Referral system: referral_code.
+    """
     name = models.CharField(max_length=50, blank=False)
     username = models.CharField(max_length=50, unique=True, blank=False)
     email = models.EmailField(unique=True, blank=False)
@@ -93,6 +107,18 @@ class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin here
         verbose_name_plural = 'My User'
 
 class UserProfile(models.Model):
+    """
+    Extended profile linked to User.
+
+    Includes:
+    - Bio, profile image, phone, gender, DOB.
+    - Socials: GitHub, LinkedIn, Twitter, Discord.
+    - Learning: interests, goals, current & completed courses, progress.
+    - Gamification: XP, badges.
+    - Web3: wallet.
+    - Referrals: code and dynamic signup link.
+    - Role: student, instructor, admin.
+    """
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
 
     # User Basic Info

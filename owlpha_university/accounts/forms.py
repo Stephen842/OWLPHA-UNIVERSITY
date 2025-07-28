@@ -7,6 +7,13 @@ from datetime import timedelta
 from .models import User, UserProfile
 
 class UserForm(forms.ModelForm):
+    """
+    User signup form.
+    
+    Includes:
+    - Name, Username, Email, Country fields.
+    - Password fields with validation.
+    """
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
@@ -118,6 +125,11 @@ class UserForm(forms.ModelForm):
 
     
 class SigninForm(forms.Form):
+    """
+    Basic sign-in form.
+
+    Accepts username or email as identifier.
+    """
     identifier = forms.CharField(label="Email or Username")
     password = forms.CharField(widget=forms.PasswordInput)
 
@@ -129,21 +141,47 @@ class SigninForm(forms.Form):
         return identifier
 
 class UserFormEdit(forms.ModelForm):
+    """
+    User profile update form.
+
+    Includes:
+    - Editable name, username, country.
+    - Editable `new_email` prefilled with current email.
+    """
+    new_email = forms.EmailField(required=False)
     class Meta:
         model = User
-        fields = ['name', 'username', 'email', 'country']
+        fields = ['name', 'username', 'country', 'new_email']
 
-    def save(self, commit = True):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Pre-fill the field with the current user email if instance exists
+        if self.instance and self.instance.pk:
+            self.fields['new_email'].initial = self.instance.email
+
+    def save(self, commit=True):
         user = super().save(commit=False)
-        new_email = self.cleaned_data.get('email')
 
+        new_email = self.cleaned_data.get('new_email')
+
+        # Make sure to compare to the current user.email
         if new_email and new_email != user.email:
             user.new_email = new_email
+        else:
+            # CLEAR new_email if same or empty
+            user.new_email = None
+
         if commit:
             user.save()
         return user
 
 class ProfileSettingsForm(forms.ModelForm):
+    """
+    Profile settings form.
+
+    Includes bio, profile image, contact, links, interests, wallet, etc.
+    """
     class Meta:
         model = UserProfile
         fields = [

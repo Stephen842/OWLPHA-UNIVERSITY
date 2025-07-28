@@ -95,7 +95,7 @@
                     <img src="{% static 'default_pro.jpg' %}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border ring-2 ring-purple-500 transition-transform duration-300 hover:scale-105">
                 {% endif %}
                 <div>
-                    <p class="font-semibold text-xs">{{ user.name }}</p>
+                    <p class="font-semibold text-xs ml-2">{{ user.name }}</p>
                 </div>
             </div>
         </aside>
@@ -234,6 +234,7 @@
 
                 <div class="space-y-4 text-gray-700">
                     <p><strong>Wallet:</strong> {{ profile.wallet_address|default:"Not connected" }}</p>
+                    <p><strong>Referral Code:</strong> {{ profile.referral_code }}</p>
                     <p><strong>Referral:</strong>
                         <a href="{{ profile.generate_referral_url }}" class="text-green-700 underline break-all">
                             {{ profile.generate_referral_url }}

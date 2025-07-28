@@ -185,6 +185,12 @@ def custom_google_callback(request):
 
 @login_required
 def user_profile_dashboard(request, username, referral_code, date_joined):
+    """
+    Displays the user profile dashboard.
+
+    Ensures the URL parameters (username, referral_code, date_joined)
+    match the logged-in user's data for security.
+    """
     user = request.user
     profile = user.profile
 
@@ -201,37 +207,15 @@ def user_profile_dashboard(request, username, referral_code, date_joined):
     return render(request, 'pages/profile_dashboard.html', context)
 
 @login_required
-def profile_settings(request):
-    user = request.user
-    profile = request.user.profile
+def send_email_change_confirmation(request, user):
+    """
+    Helper function to send a confirmation link to the user's new email.
 
-    if request.method == 'POST':
-        user_form = UserFormEdit(request.POST, instance=user)
-        profile_form = ProfileSettingsForm(request.POST, request.FILES, instance=profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect( 'profile_settings')
-    else:
-        user_form = UserFormEdit(instance=user)
-        profile_form = ProfileSettingsForm(instance=profile)
-
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'profile': profile,
-        'title': 'Account Settings | Owlpha University'
-    }
-    return render(request, 'pages/profile_setting.html', context)
-
-
-@login_required
-def send_email_change_confirmation(request):
-    user = request.user
+    Generates a unique token and encoded UID, builds a secure URL,
+    and emails it to the new email address.
+    """
     if not user.new_email:
-        messages.warning(request, 'No new email to confirm.')
-        return redirect('profile_settings')
+        return False
     
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -241,21 +225,26 @@ def send_email_change_confirmation(request):
 
     email_body = render_to_string('pages/confirm_new_email.html', {
         'username': user.username,
+        'name': user.name,
         'confirm_url': confirm_url,
     })
 
     send_mail(
         subject='Verify your new email',
-        message='Please view this email in HTML mode.',
+        message = f"Hi {user.username}, confirm your email here: {confirm_url}",
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.new_email],
         html_message=email_body,
     )
-
-    messages.success(request, f'Confirmation link sent to {user.new_email}')
-    return redirect('profile_settings')
+    return True
 
 def confirm_email_change(request, uidb64, token):
+    """
+    Verifies the confirmation link.
+
+    If valid, replaces the user's current email with the new_email,
+    clears the new_email field, and saves the change.
+    """
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -273,6 +262,48 @@ def confirm_email_change(request, uidb64, token):
     
     messages.error(request, 'Invalid or expired confirmation link')
     return redirect('profile_settings')
+
+@login_required
+def profile_settings(request):
+    """
+    Handles the user account settings page.
+
+    Loads the forms for updating User and UserProfile.
+    If a new email is provided, triggers the confirmation email workflow.
+    """
+    user = request.user
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        user_form = UserFormEdit(request.POST, instance=user)
+        profile_form = ProfileSettingsForm(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+
+            # If the user added a new_email, send confirmation now:
+            if user.new_email:
+                sent = send_email_change_confirmation(request, user)
+                if sent:
+                    messages.success(request, f'A confirmation link was sent to {user.new_email}. Please verify it.')
+            else:
+                messages.success(request, 'Profile updated successfully!')
+
+            return redirect( 'profile_settings')
+    else:
+        user_form = UserFormEdit(instance=user)
+        profile_form = ProfileSettingsForm(instance=profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'profile': profile,
+        'title': 'Account Settings | Owlpha University'
+    }
+    return render(request, 'pages/profile_setting.html', context)
+
+
 
 
 
